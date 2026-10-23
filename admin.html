@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mental Health - Admin Panel</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background: #FDFBF7; color: #333D29; overflow-x: hidden; }
+body:not(.logged-in) nav, body:not(.logged-in) #adminBar, body:not(.logged-in) #panel { display: none; }
+body.logged-in #loginBox { display: none; }
+header { background: #87AE73; color: white; padding: 18px; text-align: center; box-shadow: 0 2px 10px rgba(135,174,115,.25); }
+#adminBar { margin-top: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 14px; }
+.top-btn { background: white; color: #6A9157; border: none; padding: 5px 14px; border-radius: 15px; font-weight: bold; cursor: pointer; }
+nav { background: #6A9157; padding: 12px; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+nav button { background: transparent; border: 2px solid white; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: all .3s; }
+nav button:hover, nav button.active-nav { background: white; color: #6A9157; }
+.wrap { max-width: 1000px; margin: 30px auto; padding: 0 10px; }
+.card { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(135,174,115,.15); border: 1px solid #EAE5DC; margin-bottom: 20px; animation: fadeIn .4s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+h2 { text-align: center; margin-bottom: 18px; color: #87AE73; }
+h3 { color: #6A9157; margin-bottom: 10px; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat { background: #FDFBF7; border: 1px solid #EAE5DC; border-left: 5px solid #87AE73; border-radius: 10px; padding: 14px; }
+.stat b { display: block; font-size: 26px; color: #6A9157; }
+.stat span { font-size: 12px; color: #666; }
+.bar-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; }
+.bar-row .lbl { width: 90px; }
+.bar-track { flex: 1; height: 14px; background: #EAE5DC; border-radius: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 8px; transition: width .5s; }
+.two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+input[type=text], input[type=password], textarea { width: 100%; padding: 11px; margin: 6px 0; border: 1px solid #87AE73; border-radius: 8px; outline: none; background: #fff; font-size: 14px; }
+input:focus, textarea:focus { border-color: #6A9157; box-shadow: 0 0 5px rgba(135,174,115,.5); }
+textarea { min-height: 170px; resize: vertical; }
+label.fl { display: block; font-weight: 600; margin-top: 12px; font-size: 14px; }
+.btn { background: #87AE73; color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background .3s; }
+.btn:hover { background: #6A9157; }
+.btn.red { background: #E53935; }
+.btn.small { padding: 5px 11px; font-size: 12px; margin: 2px; }
+.btn:disabled { background: #BFCDB6; cursor: wait; }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: #F5F2EC; color: #6A9157; text-align: left; padding: 9px; }
+td { padding: 9px; border-bottom: 1px dashed #EAE5DC; white-space: nowrap; }
+.tag { padding: 2px 9px; border-radius: 10px; font-size: 11px; font-weight: bold; color: white; }
+.LOW { background: #87AE73; } .MODERATE { background: #F9A825; } .HIGH, .blocked { background: #E53935; } .active { background: #6A9157; }
+.msg { margin-top: 10px; font-weight: bold; font-size: 13px; min-height: 18px; }
+.detail-box { background: #FDFBF7; border: 1px solid #EAE5DC; border-left: 6px solid #87AE73; border-radius: 12px; padding: 16px; margin-top: 16px; font-size: 13px; }
+.detail-box li { list-style: none; padding: 4px 0; border-bottom: 1px dashed #EAE5DC; }
+#loginBox { max-width: 360px; margin: 60px auto; text-align: center; border: 2px solid #87AE73; }
+.tab { display: none; } .tab.show { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Mental Health - Admin Panel</h1>
+    <div id="adminBar">
+        <span>🛡️ <b id="adminName">Admin</b></span>
+        <button class="top-btn" onclick="logoutAdmin()">Logout</button>
+    </div>
+</header>
+
+<nav>
+    <button class="nav-btn" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showTab('users')">Users</button>
+    <button class="nav-btn" onclick="showTab('settings')">App Settings</button>
+</nav>
+
+<div class="wrap">
+    <div class="card" id="loginBox">
+        <h2>Admin Login</h2>
+        <input type="text" id="aUser" placeholder="Admin Username" autocomplete="username">
+        <input type="password" id="aPass" placeholder="Password" autocomplete="current-password">
+        <button class="btn" id="aBtn" style="width:100%; margin-top:10px;" onclick="loginAdmin()">Login</button>
+        <p class="msg" id="aMsg" style="color:#E53935;"></p>
+    </div>
+
+    <div id="panel">
+        <!-- Dashboard -->
+        <div class="tab" id="tab-dashboard">
+            <div class="card">
+                <h2>Overview</h2>
+                <div class="stat-grid" id="stats"></div>
+                <div class="two-col">
+                    <div><h3>Stress levels (last test)</h3><div id="levelBars"></div></div>
+                    <div><h3>Latest moods</h3><div id="moodBars"></div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>⚠️ Users with HIGH stress (last test)</h3>
+                <div class="tbl-wrap" id="highList"></div>
+            </div>
+        </div>
+
+        <!-- Users -->
+        <div class="tab" id="tab-users">
+            <div class="card">
+                <h2>Users</h2>
+                <input type="text" id="search" placeholder="Search name / username / mobile" oninput="renderUsers()">
+                <div style="margin:8px 0;"><button class="btn small" onclick="exportCSV()">⬇ Export CSV</button> <button class="btn small" onclick="loadAll()">⟳ Refresh</button></div>
+                <div class="tbl-wrap" id="userTable"></div>
+                <div id="userDetail"></div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="tab" id="tab-settings">
+            <div class="card">
+                <h2>App Settings</h2>
+                <label class="fl">📢 Announcement (sabko top pe dikhega, khali = band)</label>
+                <input type="text" id="cfgAnnounce" placeholder="e.g. Naya meditation feature aa raha hai!">
+                <label class="fl"><input type="checkbox" id="cfgMaint"> 🛠 Maintenance mode (app band, sirf announcement dikhega)</label>
+                <label class="fl">📞 Helpline text (HIGH stress result me dikhta hai)</label>
+                <input type="text" id="cfgHelp">
+                <label class="fl">💬 Affirmations (har line = 1 affirmation, khali = default)</label>
+                <textarea id="cfgAff"></textarea>
+                <button class="btn" id="cfgBtn" style="margin-top:12px;" onclick="saveConfig()">Save Settings</button>
+                <p class="msg" id="cfgMsg"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ", authDomain: "multi-service-app-77dd8.firebaseapp.com", projectId: "multi-service-app-77dd8", storageBucket: "multi-service-app-77dd8.appspot.com", messagingSenderId: "123732555482", appId: "1:123732555482:web:ea47c825e0dbb504f597e3" };
+  const app = initializeApp(firebaseConfig),
+    db = getFirestore(app),
+    $ = id => document.getElementById(id);
+
+  /* ============================================================
+     DIRECT LOGIN — hardcoded credentials
+     user: admin
+     pass: admin@000
+     ============================================================ */
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'admin@000';
+  const SESSION_KEY = 'mh_admin_session';
+  const APP_TAG = 'mindcare';   // mental-health users ka app field value
+
+  let users = [];
+  const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmtDate = ts => ts && ts.toDate ? ts.toDate().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : '-';
+
+  function loginAdmin() {
+    const id = $('aUser').value.trim(), pass = $('aPass').value;
+    if (!id || !pass) return ($('aMsg').innerText = 'Username aur password daalo.');
+    if (id.toLowerCase() === ADMIN_USER && pass === ADMIN_PASS) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      $('aMsg').innerText = '';
+      enterPanel();
+    } else {
+      $('aMsg').innerText = 'Username ya password galat hai.';
+    }
+  }
+
+  function logoutAdmin() {
+    sessionStorage.removeItem(SESSION_KEY);
+    document.body.classList.remove('logged-in');
+    $('aPass').value = '';
+    $('aUser').value = '';
+    users = [];
+  }
+
+  function enterPanel() {
+    document.body.classList.add('logged-in');
+    $('adminName').textContent = ADMIN_USER;
+    showTab('dashboard');
+    loadAll();
+  }
+
+  if (sessionStorage.getItem(SESSION_KEY) === '1') enterPanel();
+
+  $('aPass').addEventListener('keydown', e => { if (e.key === 'Enter') loginAdmin(); });
+
+  function showTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('show', t.id === 'tab-' + name));
+    document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active-nav', ['dashboard', 'users', 'settings'][i] === name));
+  }
+
+  /* ============================================================
+     DATA + DASHBOARD  — sirf mental-health app ke users
+     ============================================================ */
+  async function loadAll() {
+    try {
+      // Sirf mindcare users (app == 'mindcare')
+      let snap;
+      try {
+        snap = await getDocs(query(
+          collection(db, 'users'),
+          where('app', '==', APP_TAG),
+          limit(1000)
+        ));
+      } catch (err) {
+        // Agar index/field error aaye to fallback: sab lao aur client-side filter karo
+        console.warn('where(app) fail, fallback client filter:', err);
+        snap = await getDocs(query(collection(db, 'users'), limit(1000)));
+      }
+
+      users = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        // fallback safety: agar app field hai to sirf mindcare, warna purane fields se pehchaan
+        .filter(u => u.app ? u.app === APP_TAG : (u.username || u.lastStressLevel || u.testsTaken || u.lastMood || u.meditationSessions));
+
+      const c = await getDoc(doc(db, 'config', 'app')), cfg = c.exists() ? c.data() : {};
+      $('cfgAnnounce').value = cfg.announcement || '';
+      $('cfgMaint').checked = !!cfg.maintenance;
+      $('cfgHelp').value = cfg.helpline || '';
+      $('cfgAff').value = (cfg.affirmations || []).join('\n');
+    } catch (e) { console.error(e); }
+    renderDashboard();
+    renderUsers();
+  }
+
+  function bars(el, rows, color) {
+    const total = rows.reduce((s, r) => s + r[1], 0) || 1;
+    $(el).innerHTML = rows.map(([l, v, col]) => `<div class="bar-row"><span class="lbl">${esc(l)}</span><div class="bar-track"><div class="bar-fill" style="width:${v / total * 100}%; background:${col || color}"></div></div><b>${v}</b></div>`).join('');
+  }
+
+  function renderDashboard() {
+    const scored = users.filter(u => typeof u.lastStressScore === 'number'),
+      avg = scored.length ? (scored.reduce((s, u) => s + u.lastStressScore, 0) / scored.length).toFixed(1) : '-',
+      sum = k => users.reduce((s, u) => s + (u[k] || 0), 0),
+      cnt = (k, v) => users.filter(u => u[k] === v).length;
+
+    $('stats').innerHTML = [
+      [users.length, 'Total users'], [users.filter(u => u.blocked).length, 'Blocked'], [sum('testsTaken'), 'Tests taken'],
+      [avg, 'Avg last score /40'], [sum('meditationSessions'), 'Meditation sessions']
+    ].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('');
+
+    bars('levelBars', [['LOW', cnt('lastStressLevel', 'LOW'), '#87AE73'], ['MODERATE', cnt('lastStressLevel', 'MODERATE'), '#F9A825'], ['HIGH', cnt('lastStressLevel', 'HIGH'), '#E53935']]);
+    const moods = { 'very-happy': '😁 Very Happy', happy: '🙂 Happy', neutral: '😐 Neutral', sad: '😔 Sad', stressed: '😣 Stressed' };
+    bars('moodBars', Object.entries(moods).map(([k, l]) => [l, cnt('lastMood', k)]), '#6A9157');
+
+    const high = users.filter(u => u.lastStressLevel === 'HIGH');
+    $('highList').innerHTML = high.length
+      ? `<table><tr><th>Name</th><th>Mobile</th><th>Score</th><th>Last test</th></tr>${high.map(u => `<tr><td>${esc(u.name)}</td><td>${esc(u.mobile)}</td><td>${u.lastStressScore}/40</td><td>${fmtDate(u.lastTestAt)}</td></tr>`).join('')}</table>`
+      : '<p style="font-size:13px; color:#666;">Abhi koi HIGH stress user nahi hai 🌿</p>';
+  }
+
+  /* ============================================================
+     USERS
+     ============================================================ */
+  function renderUsers() {
+    const q = $('search').value.trim().toLowerCase(),
+      list = users.filter(u => !q || [u.name, u.username, u.mobile].some(v => String(v || '').toLowerCase().includes(q)));
+    $('userTable').innerHTML = list.length
+      ? `<table><tr><th>Name</th><th>Username</th><th>Mobile</th><th>Tests</th><th>Last</th><th>Mood</th><th>Status</th><th>Actions</th></tr>${list.map(u => `
+        <tr><td>${esc(u.name)}</td><td>${esc(u.username)}</td><td>${esc(u.mobile)}</td><td>${u.testsTaken || 0}</td>
+        <td>${u.lastStressLevel ? `<span class="tag ${u.lastStressLevel}">${u.lastStressScore}/40</span>` : '-'}</td><td>${esc(u.lastMood || '-')}</td>
+        <td><span class="tag ${u.blocked ? 'blocked' : 'active'}">${u.blocked ? 'BLOCKED' : 'ACTIVE'}</span></td>
+        <td><button class="btn small" onclick="viewUser('${u.id}')">Details</button>
+            <button class="btn small ${u.blocked ? '' : 'red'}" onclick="toggleBlock('${u.id}')">${u.blocked ? 'Unblock' : 'Block'}</button>
+            <button class="btn small red" onclick="deleteUser('${u.id}')">Delete</button></td></tr>`).join('')}</table>`
+      : '<p style="font-size:13px; color:#666;">Koi user nahi mila.</p>';
+  }
+
+  async function viewUser(uid) {
+    const u = users.find(x => x.id === uid);
+    $('userDetail').innerHTML = '<div class="detail-box">Loading...</div>';
+    try {
+      const [st, md] = await Promise.all(['stressResults', 'moodLogs'].map(s => getDocs(query(collection(db, 'users', uid, s), orderBy('createdAt', 'desc'), limit(10)))));
+      const li = (snap, f) => snap.empty ? '<li>No records.</li>' : snap.docs.map(d => `<li>${esc(f(d.data()))} • ${fmtDate(d.data().createdAt)}</li>`).join('');
+      $('userDetail').innerHTML = `<div class="detail-box"><h3>${esc(u.name)} (@${esc(u.username)})</h3>
+        <p>📱 ${esc(u.mobile)} • Joined: ${fmtDate(u.createdAt)} • Meditation sessions: ${u.meditationSessions || 0}</p>
+        <div class="two-col" style="margin-top:12px;"><div><b>Last 10 stress tests</b><ul>${li(st, d => `Score ${d.score}/40 (${d.level})`)}</ul></div>
+        <div><b>Last 10 moods</b><ul>${li(md, d => d.label)}</ul></div></div></div>`;
+    } catch (e) { console.error(e); $('userDetail').innerHTML = '<div class="detail-box">Details load nahi hue.</div>'; }
+  }
+
+  async function toggleBlock(uid) {
+    const u = users.find(x => x.id === uid);
+    if (!confirm(`${u.blocked ? 'Unblock' : 'Block'} ${u.name}?`)) return;
+    try { await updateDoc(doc(db, 'users', uid), { blocked: !u.blocked }); u.blocked = !u.blocked; renderUsers(); renderDashboard(); }
+    catch (e) { console.error(e); alert('Update fail hua.'); }
+  }
+
+  async function deleteUser(uid) {
+    const u = users.find(x => x.id === uid);
+    if (!confirm(`${u.name} ka poora data (profile, tests, moods) delete ho jaayega. Pakka?`)) return;
+    try {
+      for (const s of ['stressResults', 'moodLogs']) {
+        const snap = await getDocs(collection(db, 'users', uid, s));
+        await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+      }
+      await Promise.all([deleteDoc(doc(db, 'users', uid)), deleteDoc(doc(db, 'usernames', u.username)), deleteDoc(doc(db, 'mobiles', u.mobile))]);
+      users = users.filter(x => x.id !== uid);
+      $('userDetail').innerHTML = '';
+      renderUsers(); renderDashboard();
+      alert('Data delete ho gaya. Login band karne ke liye Firebase Console > Authentication se bhi ye user delete karo.');
+    } catch (e) { console.error(e); alert('Delete fail hua.'); }
+  }
+
+  function exportCSV() {
+    const rows = [['Name', 'Username', 'Mobile', 'Tests', 'Last Score', 'Last Level', 'Last Mood', 'Meditations', 'Blocked']]
+      .concat(users.map(u => [u.name, u.username, u.mobile, u.testsTaken || 0, u.lastStressScore ?? '', u.lastStressLevel || '', u.lastMood || '', u.meditationSessions || 0, !!u.blocked]));
+    const csv = rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n'),
+      a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = 'users.csv';
+    a.click();
+  }
+
+  /* ============================================================
+     APP SETTINGS (config/app) - main app ye read karta hai
+     ============================================================ */
+  async function saveConfig() {
+    $('cfgBtn').disabled = true;
+    try {
+      await setDoc(doc(db, 'config', 'app'), {
+        announcement: $('cfgAnnounce').value.trim(),
+        maintenance: $('cfgMaint').checked,
+        helpline: $('cfgHelp').value.trim(),
+        affirmations: $('cfgAff').value.split('\n').map(x => x.trim()).filter(Boolean),
+        updatedAt: serverTimestamp()
+      });
+      $('cfgMsg').style.color = '#6A9157'; $('cfgMsg').innerText = 'Settings saved ✓';
+    } catch (e) { console.error(e); $('cfgMsg').style.color = '#E53935'; $('cfgMsg').innerText = 'Save fail hua (rules check karo).'; }
+    $('cfgBtn').disabled = false;
+  }
+
+  Object.assign(window, { loginAdmin, logoutAdmin, showTab, loadAll, renderUsers, viewUser, toggleBlock, deleteUser, exportCSV, saveConfig });
+</script>
+</body>
+</html>
