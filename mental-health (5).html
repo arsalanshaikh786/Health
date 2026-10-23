@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mental Health &amp; Stress Management</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Palette: Sage Green (#87AE73), Off-White (#FDFBF7), Soft Card (#F5F2EC), Accent (#6A9157) */
+body {
+    background-color: #FDFBF7;
+    color: #333D29;
+    overflow-x: hidden;
+}
+
+/* Logged-out / logged-in visibility */
+body:not(.logged-in) nav,
+body:not(.logged-in) .slide-controls,
+body:not(.logged-in) #userBar { display: none; }
+body.logged-in #loginSlide { display: none !important; }
+body.maint nav, body.maint .slides-wrapper, body.maint .slide-controls { display: none !important; }   /* admin maintenance mode */
+
+/* Header & Nav */
+header {
+    background: #87AE73;
+    color: white;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(135, 174, 115, 0.25);
+}
+
+#userBar {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 14px;
+}
+
+#logoutBtn {
+    background: white;
+    color: #6A9157;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#logoutBtn:hover { background: #F5F2EC; }
+
+nav {
+    background: #6A9157;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+nav button {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+nav button:hover, nav button.active-nav {
+    background: white;
+    color: #6A9157;
+}
+
+/* Slide Container */
+.slides-wrapper {
+    position: relative;
+    max-width: 900px;
+    margin: 30px auto;
+    min-height: 600px;
+    padding: 0 10px;
+}
+
+.slide {
+    display: none;
+    background: #FFFFFF;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(135, 174, 115, 0.15);
+    border: 1px solid #EAE5DC;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.slide.active-slide {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Navigation Controls */
+.slide-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 20px auto 40px;
+    padding: 0 10px;
+}
+
+.ctrl-btn {
+    background: #87AE73;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.ctrl-btn:hover {
+    background: #6A9157;
+}
+
+.ctrl-btn:disabled {
+    background: #DDD8CE;
+    cursor: not-allowed;
+}
+
+.slide-indicator {
+    font-weight: bold;
+    color: #6A9157;
+}
+
+/* Headings */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #87AE73;
+}
+
+/* Slide 1: Login / Register with Background Image */
+.login-container {
+    /* Tip: file ka naam bina space ke rakho (e.g. login-bg.jpg) aur same folder me upload karo */
+    background: url('Screenshot 2026-07-31 103935_2.jpg') no-repeat center center;
+    background-size: cover;
+    background-color: #FDFBF7;
+    border-radius: 16px;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 6px solid #EAE5DC;
+}
+
+.login-card {
+    background: rgba(253, 251, 247, 0.94);
+    backdrop-filter: blur(4px);
+    padding: 30px 28px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    text-align: center;
+    border: 2px solid #87AE73;
+}
+
+.login-card h2 {
+    color: #87AE73;
+    margin-bottom: 5px;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #87AE73;
+    border-radius: 8px;
+    outline: none;
+    background: #FFFFFF;
+}
+
+.login-card input:focus {
+    border-color: #6A9157;
+    box-shadow: 0 0 5px rgba(135, 174, 115, 0.5);
+}
+
+.login-card button.auth-btn {
+    width: 100%;
+    padding: 12px;
+    background: #87AE73;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.login-card button.auth-btn:hover {
+    background: #6A9157;
+}
+
+.login-card button.auth-btn:disabled {
+    background: #BFCDB6;
+    cursor: wait;
+}
+
+.auth-switch {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #666;
+}
+
+.auth-switch a {
+    color: #6A9157;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.field-hint {
+    text-align: left;
+    font-size: 11px;
+    color: #888;
+    margin: -4px 2px 4px;
+}
+
+#authMsg {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    min-height: 18px;
+}
+
+/* Slide 2: Home & About */
+.hero-box {
+    text-align: center;
+    padding: 25px;
+    background: #F5F2EC;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #EAE5DC;
+}
+
+.hero-box h2 {
+    color: #87AE73;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.info-card {
+    background: #FDFBF7;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid #EAE5DC;
+    border-left: 5px solid #87AE73;
+}
+
+.info-card h3 {
+    color: #6A9157;
+    margin-bottom: 8px;
+}
+
+/* Slide 3: Stress Test Questions */
+.q-block {
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    background: #FDFBF7;
+    border-radius: 8px;
+    border: 1px solid #EAE5DC;
+}
+
+.q-block label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333D29;
+}
+
+.q-block select {
+    width: 100%;
+    padding: 9px;
+    border-radius: 6px;
+    border: 1px solid #87AE73;
+    background: white;
+    color: #333;
+    outline: none;
+}
+
+#testMsg {
+    text-align: center;
+    margin-top: 12px;
+    font-weight: bold;
+    color: #E53935;
+    min-height: 18px;
+}
+
+/* Stress Test: one question at a time */
+.progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: bold;
+    color: #6A9157;
+    margin-bottom: 6px;
+}
+
+.progress-track {
+    height: 8px;
+    background: #EAE5DC;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0;
+    background: #87AE73;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+
+.q-single {
+    padding: 20px 18px;
+    background: #FDFBF7;
+    border-radius: 12px;
+    border: 1px solid #EAE5DC;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.q-single h3 {
+    font-size: 19px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    color: #333D29;
+    text-align: center;
+}
+
+.opt-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    background: #FFFFFF;
+    border: 2px solid #EAE5DC;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #333D29;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.opt-btn:hover, .opt-btn.selected-opt {
+    border-color: #87AE73;
+    background: #F5F2EC;
+}
+
+.opt-btn.selected-opt {
+    font-weight: bold;
+    color: #6A9157;
+}
+
+.opt-btn.selected-opt::after {
+    content: ' ✔';
+}
+
+.q-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.q-hint {
+    text-align: center;
+    font-size: 11px;
+    color: #888;
+    margin-top: 10px;
+}
+
+/* Slide 4: Stress Gauge Result */
+.gauge-container {
+    text-align: center;
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.gauge-btn-top {
+    background: #87AE73;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.gauge-btn-top:hover { background: #6A9157; }
+
+.gauge-svg {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+}
+
+.gauge-center-circle {
+    fill: #6A9157;
+}
+
+.gauge-score-text {
+    fill: white;
+    font-size: 26px;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.gauge-level-text {
+    fill: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-anchor: middle;
+}
+
+.gauge-tip {
+    margin-top: 15px;
+    padding: 12px 14px;
+    background: #F5F2EC;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 20px;
+}
+
+.gauge-desc {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #555;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* History lists */
+.history-box {
+    margin-top: 22px;
+    text-align: left;
+    background: #FDFBF7;
+    border: 1px solid #EAE5DC;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.history-box h4 {
+    color: #6A9157;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.history-box ul {
+    list-style: none;
+    font-size: 13px;
+    color: #555;
+}
+
+.history-box li {
+    padding: 5px 0;
+    border-bottom: 1px dashed #EAE5DC;
+}
+
+.history-box li:last-child { border-bottom: none; }
+
+/* Slide 5: Mood Tracker */
+.mood-options {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.mood-btn {
+    background: #FDFBF7;
+    border: 2px solid #EAE5DC;
+    border-radius: 12px;
+    padding: 12px 8px;
+    cursor: pointer;
+    text-align: center;
+    width: 18%;
+    min-width: 85px;
+    transition: all 0.3s;
+}
+
+.mood-btn:hover, .mood-btn.selected-mood {
+    border-color: #87AE73;
+    background: #F5F2EC;
+    transform: translateY(-3px);
+}
+
+.mood-emoji {
+    font-size: 34px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.mood-detail-box {
+    background: #FDFBF7;
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid #EAE5DC;
+    border-left: 6px solid #87AE73;
+    min-height: 120px;
+}
+
+/* Slide 6: Relaxation Tools */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.tool-card {
+    background: #FDFBF7;
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid #EAE5DC;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    text-align: center;
+}
+
+.tool-card h3 {
+    margin-bottom: 10px;
+    color: #87AE73;
+}
+
+.link-btn {
+    display: inline-block;
+    background: #87AE73;
+    color: white;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-top: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.link-btn:hover {
+    background: #6A9157;
+}
+
+.circle-timer {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #F5F2EC;
+    border: 2px solid #87AE73;
+    margin: 18px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    color: #87AE73;
+    transition: transform 4s ease-in-out, background 1s, color 1s;
+}
+
+.circle-expand {
+    transform: scale(1.3);
+    background: #87AE73;
+    color: white;
+    border-color: #6A9157;
+}
+
+footer {
+    text-align: center;
+    background: #87AE73;
+    color: white;
+    padding: 15px;
+    margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Mental Health &amp; Stress Management</h1>
+    <div id="userBar">
+        <span>👤 <b id="userName">User</b></span>
+        <button id="logoutBtn" onclick="logoutUser()">Logout</button>
+    </div>
+</header>
+
+<div id="announceBar" style="display:none; background:#F9A825; color:#333; text-align:center; padding:9px; font-size:14px; font-weight:bold;"></div>
+
+<nav>
+    <button onclick="goToSlide(1)" class="nav-btn">Home / About</button>
+    <button onclick="goToSlide(2)" class="nav-btn">Daily Routine Test</button>
+    <button onclick="goToSlide(3)" class="nav-btn">Stress Result</button>
+    <button onclick="goToSlide(4)" class="nav-btn">Mood Tracker</button>
+    <button onclick="goToSlide(5)" class="nav-btn">Relaxation Tools</button>
+</nav>
+
+<div class="slides-wrapper">
+
+    <!-- SLIDE 0: Login / Register -->
+    <div class="slide active-slide" id="loginSlide">
+        <div class="login-container">
+            <div class="login-card">
+                <h2 id="authTitle">Welcome Back</h2>
+                <p id="authSub" style="font-size:13px; color:#666; margin-bottom:12px;">Login to track your stress &amp; mood</p>
+
+                <!-- Login form -->
+                <div id="loginForm">
+                    <input type="text" id="loginId" placeholder="Username or Mobile Number" autocomplete="username">
+                    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+                    <button class="auth-btn" id="loginBtn" onclick="loginUser()">Login</button>
+                    <p class="auth-switch">New here? <a onclick="showAuthTab('register')">Create account</a></p>
+                </div>
+
+                <!-- Register form -->
+                <div id="registerForm" style="display:none;">
+                    <input type="text" id="regName" placeholder="Full Name" autocomplete="name">
+                    <input type="text" id="regUser" placeholder="Username" autocomplete="off" maxlength="20">
+                    <p class="field-hint">3-20 characters: small letters, numbers, underscore (start with a letter)</p>
+                    <input type="tel" id="regMobile" placeholder="Mobile Number (10 digits)" inputmode="numeric" maxlength="10" autocomplete="tel">
+                    <input type="password" id="regPass" placeholder="Password (min 6 characters)" autocomplete="new-password">
+                    <button class="auth-btn" id="registerBtn" onclick="registerUser()">Create Account</button>
+                    <p class="auth-switch">Already have an account? <a onclick="showAuthTab('login')">Login</a></p>
+                </div>
+
+                <p id="authMsg"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 1: Home & About -->
+    <div class="slide">
+        <div class="hero-box">
+            <h2>Welcome, <span id="welcomeName">Friend</span>!</h2>
+            <p>Your comprehensive space for stress assessment, daily mood tracking, and guided relaxation exercises.</p>
+        </div>
+
+        <h2>About Mental Health</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>What is Mental Health?</h3>
+                <p>Includes emotional, psychological, and social well-being. It shapes how we think, feel, and react to life.</p>
+            </div>
+            <div class="info-card">
+                <h3>Common Causes</h3>
+                <ul style="padding-left: 18px; margin-top: 5px;">
+                    <li>Work &amp; Academic Pressure</li>
+                    <li>Financial Strain</li>
+                    <li>Sleep Deprivation</li>
+                    <li>Lifestyle Imbalances</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>Self-Care Essentials</h3>
+                <p>🧠 Mindful Breathing<br>💤 7-8 Hrs Sleep<br>🏃 Daily Movement<br>🥗 Balanced Nutrition</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: Daily Routine Stress Test (10 questions) -->
+    <div class="slide">
+        <h2>Daily Routine Stress Assessment</h2>
+        <p style="text-align:center; margin-bottom:15px; color:#666;">Answer these 10 questions honestly based on your day.</p>
+
+        <div class="progress-meta">
+            <span id="qCounter">Question 1 of 10</span>
+            <span id="qPercent">0% done</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="qProgress"></div></div>
+
+        <div id="questionsContainer"></div>
+
+        <p id="testMsg"></p>
+        <div class="q-controls">
+            <button class="ctrl-btn" id="qBackBtn" onclick="prevQuestion()">❮ Back</button>
+            <button class="ctrl-btn" id="qNextBtn" onclick="nextQuestion()">Next ❯</button>
+        </div>
+        <p class="q-hint">Tip: tap an answer and the next question opens automatically (keys 1-5 also work).</p>
+    </div>
+
+    <!-- SLIDE 3: Stress Score Result (Gauge) -->
+    <div class="slide">
+        <div class="gauge-container">
+            <button class="gauge-btn-top" onclick="goToSlide(2)">▶ GET YOUR STRESS SCORE</button>
+
+            <svg class="gauge-svg" viewBox="-15 -12 230 134">
+                <!-- Arcs: Low 0-14 | Moderate 15-26 | High 27-40 (out of 40) -->
+                <path d="M 20 100 A 80 80 0 0 1 63.68 28.72" fill="none" stroke="#87AE73" stroke-width="22" />
+                <path d="M 63.68 28.72 A 80 80 0 0 1 136.32 28.72" fill="none" stroke="#F9A825" stroke-width="22" />
+                <path d="M 136.32 28.72 A 80 80 0 0 1 180 100" fill="none" stroke="#E53935" stroke-width="22" />
+
+                <!-- Scale labels (generated by JS) -->
+                <g id="gaugeTicks" font-size="9" fill="#333" text-anchor="middle"></g>
+
+                <!-- Needle first, so the center circle sits on top of it -->
+                <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="14" stroke="#333D29" stroke-width="4" stroke-linecap="round" transform="rotate(-90 100 100)" />
+
+                <circle cx="100" cy="100" r="45" class="gauge-center-circle" />
+                <text x="100" y="90" id="gaugeScore" class="gauge-score-text">--</text>
+                <text x="100" y="112" id="gaugeLevel" class="gauge-level-text">TAKE TEST</text>
+            </svg>
+
+            <p class="gauge-tip" id="gaugeTip">Take the Daily Routine Test first to see your stress score here.</p>
+
+            <h3 style="margin-top:20px; color:#87AE73;">How the Stress Test works</h3>
+            <p class="gauge-desc">
+                This is a quick lifestyle-based self-check (score 0-40), inspired by stress-assessment tools like the <b>Perceived Stress Scale</b>. It is <b>not</b> a clinical diagnosis. If you feel overwhelmed for a long time, please talk to a counsellor or doctor.
+            </p>
+
+            <div class="history-box">
+                <h4>📈 Your last 5 results</h4>
+                <ul id="stressHistory"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: Mood Tracker -->
+    <div class="slide">
+        <h2>Daily Mood Tracker</h2>
+        <p style="text-align:center; margin-bottom:20px; color:#666;">Select your current mood to view insights and tips, then save it to your history:</p>
+
+        <div class="mood-options">
+            <div class="mood-btn" onclick="selectMood('very-happy', this)">
+                <span class="mood-emoji">😁</span>
+                <span style="font-size:12px; font-weight:bold; color:#87AE73;">Very Happy</span>
+            </div>
+            <div class="mood-btn" onclick="selectMood('happy', this)">
+                <span class="mood-emoji">🙂</span>
+                <span style="font-size:12px; font-weight:bold; color:#87AE73;">Happy</span>
+            </div>
+            <div class="mood-btn" onclick="selectMood('neutral', this)">
+                <span class="mood-emoji">😐</span>
+                <span style="font-size:12px; font-weight:bold; color:#87AE73;">Neutral</span>
+            </div>
+            <div class="mood-btn" onclick="selectMood('sad', this)">
+                <span class="mood-emoji">😔</span>
+                <span style="font-size:12px; font-weight:bold; color:#87AE73;">Sad</span>
+            </div>
+            <div class="mood-btn" onclick="selectMood('stressed', this)">
+                <span class="mood-emoji">😣</span>
+                <span style="font-size:12px; font-weight:bold; color:#87AE73;">Stressed</span>
+            </div>
+        </div>
+
+        <div class="mood-detail-box" id="moodDetailBox">
+            <h3 id="moodTitle" style="color:#87AE73;">Select a mood above</h3>
+            <p id="moodDesc" style="margin-top:8px; line-height:1.5;">Click any of the emojis to get an in-depth breakdown and actionable self-care recommendations.</p>
+            <button class="link-btn" id="saveMoodBtn" onclick="saveMood()" style="display:none;">Save my mood</button>
+            <p id="moodSaveMsg" style="font-size:13px; font-weight:bold; color:#6A9157; min-height:18px; margin-top:8px;"></p>
+        </div>
+
+        <div class="history-box">
+            <h4>🗓️ Your last 5 moods</h4>
+            <ul id="moodHistory"></ul>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: Relaxation Tools -->
+    <div class="slide">
+        <h2>Relaxation Tools</h2>
+
+        <div class="tools-grid">
+            <!-- 1. Breathing -->
+            <div class="tool-card">
+                <h3>1. Breathing Exercise</h3>
+                <p style="font-size:13px;">Guided 4-7-8 Deep Breathing Cycle</p>
+                <div class="circle-timer" id="breathCircle">Ready</div>
+                <button class="link-btn" onclick="toggleBreathing()" id="breathBtn">Start Breathing</button>
+                <br>
+                <a href="https://share.google/yopdYV6HoXDWR3Y3K" target="_blank" rel="noopener" class="link-btn" style="background:#6A9157;">Open Resource 🔗</a>
+            </div>
+
+            <!-- 2. Meditation Timer -->
+            <div class="tool-card">
+                <h3>2. Meditation Timer</h3>
+                <p style="font-size:13px;">Online Guided Meditation Session</p>
+                <div style="font-size:24px; font-weight:bold; margin:15px 0 5px; color:#87AE73;" id="medTimerDisplay">05:00</div>
+                <p id="medStatus" style="font-size:12px; color:#6A9157; min-height:16px; margin-bottom:5px;"></p>
+                <button class="link-btn" onclick="startMeditation()">Start Timer</button>
+                <button class="link-btn" style="background:#E53935;" onclick="resetMeditation()">Reset</button>
+                <br>
+                <a href="https://share.google/yopdYV6HoXDWR3Y3K" target="_blank" rel="noopener" class="link-btn" style="background:#6A9157;">Online Guided File 🔗</a>
+            </div>
+
+            <!-- 3. Relaxation Music -->
+            <div class="tool-card">
+                <h3>3. Relaxation Music</h3>
+                <p style="font-size:13px;">Calming Ambient Audio Track</p>
+                <audio controls style="width:100%; margin-top:15px;">
+                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                    Your browser does not support audio playback.
+                </audio>
+                <br>
+                <a href="https://share.google/yopdYV6HoXDWR3Y3K" target="_blank" rel="noopener" class="link-btn" style="background:#6A9157; margin-top:12px;">Audio Resource 🔗</a>
+            </div>
+
+            <!-- 4. Positive Affirmation -->
+            <div class="tool-card">
+                <h3>4. Positive Affirmation</h3>
+                <p style="font-size:13px; min-height:40px; margin:10px 0; font-style:italic;" id="affirmationText">
+                    "Click below to generate a daily positive affirmation."
+                </p>
+                <button class="link-btn" onclick="nextAffirmation()">Get Affirmation</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Slide Change Controls -->
+<div class="slide-controls">
+    <button class="ctrl-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Previous</button>
+    <span class="slide-indicator" id="slideIndicator">Slide 1 of 5</span>
+    <button class="ctrl-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+</div>
+
+<footer>
+    <p>© 2026 Mental Health &amp; Stress Management System</p>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, serverTimestamp, collection, addDoc, getDocs, query, orderBy, limit, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ", authDomain: "multi-service-app-77dd8.firebaseapp.com", projectId: "multi-service-app-77dd8", storageBucket: "multi-service-app-77dd8.appspot.com", messagingSenderId: "123732555482", appId: "1:123732555482:web:ea47c825e0dbb504f597e3" };
+  const app = initializeApp(firebaseConfig),
+    auth = getAuth(app),
+    db = getFirestore(app),
+    EMAIL_DOMAIN = "@mindcare.app",   // username/mobile ko Firebase email-format me map karne ke liye (fake email, mail nahi jaata)
+    $ = id => document.getElementById(id);
+
+  /* ============================================================
+     SLIDES
+     Slide 0 = Login/Register (sirf logout state me), Slides 1-5 = app
+     ============================================================ */
+  let currentSlide = 0;
+  const totalSlides = 5;
+
+  function updateSlideView() {
+    const slides = document.querySelectorAll('.slide');
+    const navBtns = document.querySelectorAll('.nav-btn');
+
+    slides.forEach((s, idx) => s.classList.toggle('active-slide', idx === currentSlide));
+    navBtns.forEach((btn, idx) => btn.classList.toggle('active-nav', idx + 1 === currentSlide));
+
+    $('slideIndicator').innerText = `Slide ${Math.max(currentSlide, 1)} of ${totalSlides}`;
+    $('prevBtn').disabled = currentSlide <= 1;
+    $('nextBtn').disabled = currentSlide >= totalSlides;
+  }
+
+  function goToSlide(index) {
+    if (!auth.currentUser) index = 0;          // login ke bina slides open nahi honge
+    else if (index < 1) index = 1;
+    currentSlide = Math.min(index, totalSlides);
+    if (currentSlide !== 5) stopBreathing();   // tools slide se bahar jaate hi breathing band
+    updateSlideView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function changeSlide(direction) { goToSlide(currentSlide + direction); }
+
+  /* ============================================================
+     AUTH  (username / mobile number + password)
+     Firebase Auth me username se fake email banta hai: username@mindcare.app
+     Mobile se login: mobiles/{mobile} doc se username nikal ke wahi email use hota hai
+     ============================================================ */
+  let profile = null, registering = false;
+
+  const toEmail = u => u.toLowerCase() + EMAIL_DOMAIN,
+    isMobile = v => /^[6-9]\d{9}$/.test(v),
+    isUsername = v => /^[a-z][a-z0-9_]{2,19}$/.test(v);
+
+  function authMsg(text, ok = false) {
+    const el = $('authMsg');
+    el.style.color = ok ? '#6A9157' : '#E53935';
+    el.innerText = text;
+  }
+
+  function setBusy(busy) {
+    $('loginBtn').disabled = busy;
+    $('registerBtn').disabled = busy;
+  }
+
+  function friendlyError(e) {
+    const c = e && e.code ? e.code : '';
+    if (c === 'auth/invalid-credential' || c === 'auth/user-not-found' || c === 'auth/wrong-password') return 'Username / mobile or password is incorrect.';
+    if (c === 'auth/email-already-in-use') return 'This username is already taken.';
+    if (c === 'auth/weak-password') return 'Password must be at least 6 characters.';
+    if (c === 'auth/too-many-requests') return 'Too many attempts. Please try again after some time.';
+    if (c === 'auth/network-request-failed') return 'Network error. Check your internet connection.';
+    if (c === 'auth/operation-not-allowed') return 'Email/Password sign-in is not enabled in Firebase Console.';
+    if (c === 'permission-denied' || c === 'firestore/permission-denied') return 'Firestore rules are blocking this. Update your rules.';
+    return 'Something went wrong. Please try again.';
+  }
+
+  function showAuthTab(mode) {
+    const reg = mode === 'register';
+    $('loginForm').style.display = reg ? 'none' : 'block';
+    $('registerForm').style.display = reg ? 'block' : 'none';
+    $('authTitle').innerText = reg ? 'Create Account' : 'Welcome Back';
+    $('authSub').innerText = reg ? 'Sign up to start tracking your wellness' : 'Login to track your stress & mood';
+    authMsg('');
+  }
+
+  async function registerUser() {
+    const name = $('regName').value.trim(),
+      username = $('regUser').value.trim().toLowerCase(),
+      mobile = $('regMobile').value.trim(),
+      pass = $('regPass').value;
+
+    if (name.length < 2) return authMsg('Please enter your full name.');
+    if (!isUsername(username)) return authMsg('Username: 3-20 chars, small letters/numbers/underscore, start with a letter.');
+    if (!isMobile(mobile)) return authMsg('Enter a valid 10-digit mobile number.');
+    if (pass.length < 6) return authMsg('Password must be at least 6 characters.');
+
+    setBusy(true);
+    authMsg('Creating your account...', true);
+    registering = true;
+    try {
+      const [uSnap, mSnap] = await Promise.all([
+        getDoc(doc(db, 'usernames', username)),
+        getDoc(doc(db, 'mobiles', mobile))
+      ]);
+      if (uSnap.exists()) { registering = false; setBusy(false); return authMsg('This username is already taken.'); }
+      if (mSnap.exists()) { registering = false; setBusy(false); return authMsg('This mobile number is already registered.'); }
+
+      const cred = await createUserWithEmailAndPassword(auth, toEmail(username), pass),
+        uid = cred.user.uid,
+        batch = writeBatch(db);
+
+      batch.set(doc(db, 'users', uid), { name, username, mobile, testsTaken: 0, meditationSessions: 0, createdAt: serverTimestamp() });
+      batch.set(doc(db, 'usernames', username), { uid });
+      batch.set(doc(db, 'mobiles', mobile), { username, uid });
+      await batch.commit();
+
+      registering = false;
+      await enterApp(cred.user);
+    } catch (e) {
+      console.error(e);
+      registering = false;
+      if (auth.currentUser) await enterApp(auth.currentUser);   // account ban chuka tha, profile save fail hua - blank screen se bachao
+      else authMsg(friendlyError(e));
+    }
+    setBusy(false);
+  }
+
+  async function loginUser() {
+    let id = $('loginId').value.trim().toLowerCase();
+    const pass = $('loginPass').value;
+    if (!id || !pass) return authMsg('Please enter username/mobile and password.');
+
+    setBusy(true);
+    authMsg('Logging in...', true);
+    try {
+      if (/^\d{10}$/.test(id)) {                       // mobile number se login
+        const m = await getDoc(doc(db, 'mobiles', id));
+        if (!m.exists()) { setBusy(false); return authMsg('No account found for this mobile number.'); }
+        id = m.data().username;
+      }
+      await signInWithEmailAndPassword(auth, toEmail(id), pass);
+      authMsg('');
+    } catch (e) {
+      console.error(e);
+      authMsg(friendlyError(e));
+    }
+    setBusy(false);
+  }
+
+  async function logoutUser() {
+    try { await signOut(auth); } catch (e) { console.error(e); }
+  }
+
+  async function enterApp(user) {
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      profile = snap.exists() ? snap.data() : { name: user.email.split('@')[0] };
+    } catch (e) {
+      console.error(e);
+      profile = { name: user.email.split('@')[0] };
+    }
+    if (profile.blocked) {                             // admin ne block kiya hai
+      await signOut(auth);
+      return authMsg('Your account has been blocked by admin.');
+    }
+    $('userName').textContent = profile.name;
+    $('welcomeName').textContent = profile.name;
+    if (currentSlide === 0) goToSlide(1);
+    loadHistory();
+  }
+
+  onAuthStateChanged(auth, async user => {
+    document.body.classList.toggle('logged-in', !!user);
+    if (!user) {
+      profile = null;
+      $('loginPass').value = '';
+      $('regPass').value = '';
+      resetTestForm();
+      resetGauge();
+      resetMoodView();
+      ['stressHistory', 'moodHistory'].forEach(id => $(id).innerHTML = '');   // shared device pe purana data na dikhe
+      stopBreathing();
+      resetMeditation();
+      goToSlide(0);
+      return;
+    }
+    if (registering) return;                           // register ke baad enterApp khud chalega
+    await enterApp(user);
+  });
+
+  // Enter key se login / register
+  ['loginId', 'loginPass'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') loginUser(); }));
+  ['regName', 'regUser', 'regMobile', 'regPass'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') registerUser(); }));
+  $('regMobile').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); });
+
+  /* ============================================================
+     STRESS TEST  (10 questions, score 0-40, jitna kam utna better)
+     ============================================================ */
+  const questions = [
+    "Did you sleep at least 7 hours?",
+    "Did you drink enough water today?",
+    "Did you exercise today?",
+    "Did you eat healthy food?",
+    "Did you spend time with family?",
+    "Did you avoid excessive mobile use?",
+    "Did you feel relaxed today?",
+    "Did you complete your work on time?",
+    "Did you meditate today?",
+    "Are you feeling positive today?"
+  ];
+
+  const answerOptions = ["Yes, fully", "Mostly yes", "Sometimes", "Mostly no", "No, not at all"];   // index = score (0-4)
+
+  let qIndex = 0, answers = Array(questions.length).fill(null), advanceTimer, submitting = false;
+
+  function renderQuestion() {
+    const last = qIndex === questions.length - 1,
+      answered = answers.filter(a => a !== null).length,
+      pct = Math.round(answered / questions.length * 100);
+
+    $('questionsContainer').innerHTML = `
+        <div class="q-single">
+            <h3>${questions[qIndex]}</h3>
+            ${answerOptions.map((o, v) => `<button type="button" class="opt-btn${answers[qIndex] === v ? ' selected-opt' : ''}" onclick="selectAnswer(${v})">${o}</button>`).join('')}
+        </div>
+    `;
+    $('qCounter').textContent = `Question ${qIndex + 1} of ${questions.length}`;
+    $('qPercent').textContent = `${pct}% done`;
+    $('qProgress').style.width = pct + '%';
+    $('qBackBtn').style.visibility = qIndex === 0 ? 'hidden' : 'visible';
+    $('qNextBtn').innerHTML = last ? 'Submit &amp; View Score' : 'Next ❯';
+    $('qNextBtn').disabled = answers[qIndex] === null || submitting;
+    $('testMsg').innerText = '';
+  }
+
+  function selectAnswer(v) {
+    answers[qIndex] = v;
+    renderQuestion();
+    clearTimeout(advanceTimer);
+    const idx = qIndex;
+    if (idx < questions.length - 1) advanceTimer = setTimeout(() => { if (qIndex === idx) nextQuestion(); }, 350);   // auto next
+  }
+
+  function nextQuestion() {
+    if (answers[qIndex] === null) return;
+    clearTimeout(advanceTimer);
+    if (qIndex < questions.length - 1) { qIndex++; renderQuestion(); }
+    else calculateAndShowResult();
+  }
+
+  function prevQuestion() {
+    clearTimeout(advanceTimer);
+    if (qIndex > 0) { qIndex--; renderQuestion(); }
+  }
+
+  function resetTestForm() {
+    clearTimeout(advanceTimer);
+    answers = Array(questions.length).fill(null);
+    qIndex = 0;
+    submitting = false;
+    renderQuestion();
+  }
+  renderQuestion();
+
+  // Keyboard: 1-5 se answer select (sirf test slide pe)
+  document.addEventListener('keydown', e => {
+    if (currentSlide !== 2 || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    const n = parseInt(e.key);
+    if (n >= 1 && n <= 5) selectAnswer(n - 1);
+  });
+
+  let helpline = 'Tele-MANAS (free, 24x7 helpline): 14416.';   // admin panel se change hota hai
+
+  function levelOf(score) {
+    if (score <= 14) return { name: 'LOW', tip: 'Great! Your routine looks balanced. Keep up your sleep, hydration and movement habits.' };
+    if (score <= 26) return { name: 'MODERATE', tip: 'Some stress signs are showing. Try the breathing exercise, take short breaks and fix your sleep routine.' };
+    return { name: 'HIGH', tip: 'Your stress seems high. Please slow down, use the relaxation tools, and talk to someone you trust or a counsellor. ' + helpline };
+  }
+
+  // Gauge scale labels (0-40)
+  (function drawTicks() {
+    let html = '';
+    for (let v = 0; v <= 40; v += 5) {
+      const t = v / 40,
+        x = 100 - 103 * Math.cos(Math.PI * t),
+        y = 100 - 103 * Math.sin(Math.PI * t) + 3;
+      html += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}">${v}</text>`;
+    }
+    $('gaugeTicks').innerHTML = html;
+  })();
+
+  let needleAngle = -90;
+  function setNeedle(target) {
+    const from = needleAngle, t0 = performance.now();
+    const step = now => {
+      const p = Math.min((now - t0) / 700, 1),
+        e = 1 - Math.pow(1 - p, 3);
+      needleAngle = from + (target - from) * e;
+      $('gaugeNeedle').setAttribute('transform', `rotate(${needleAngle} 100 100)`);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function resetGauge() {
+    needleAngle = -90;
+    $('gaugeNeedle').setAttribute('transform', 'rotate(-90 100 100)');
+    $('gaugeScore').textContent = '--';
+    $('gaugeLevel').textContent = 'TAKE TEST';
+    $('gaugeTip').textContent = 'Take the Daily Routine Test first to see your stress score here.';
+  }
+
+  async function calculateAndShowResult() {
+    if (submitting) return;                            // double click se duplicate record na bane
+    const missing = answers.findIndex(a => a === null);
+    if (missing !== -1) {
+      qIndex = missing;
+      renderQuestion();
+      $('testMsg').innerText = 'Please answer this question first.';
+      return;
+    }
+    submitting = true;
+    $('testMsg').innerText = '';
+
+    const score = answers.reduce((sum, a) => sum + a, 0),
+      lvl = levelOf(score);
+
+    $('gaugeScore').textContent = score;
+    $('gaugeLevel').textContent = lvl.name;
+    $('gaugeTip').textContent = lvl.tip;
+    goToSlide(3);
+    setNeedle(-90 + (score / 40) * 180);
+
+    try {
+      const uid = auth.currentUser.uid;
+      await addDoc(collection(db, 'users', uid, 'stressResults'), { score, level: lvl.name, createdAt: serverTimestamp() });
+      await updateDoc(doc(db, 'users', uid), { testsTaken: increment(1), lastStressScore: score, lastStressLevel: lvl.name, lastTestAt: serverTimestamp() });
+      loadHistory();
+    } catch (e) { console.error(e); }
+    resetTestForm();                                   // agli baar test fresh (Q1 se) khule
+  }
+
+  /* ============================================================
+     HISTORY (Firestore se last 5 records)
+     ============================================================ */
+  async function renderHistory(uid, sub, elId, fmt) {
+    const el = $(elId);
+    try {
+      const snap = await getDocs(query(collection(db, 'users', uid, sub), orderBy('createdAt', 'desc'), limit(5)));
+      el.innerHTML = '';
+      if (snap.empty) {
+        const li = document.createElement('li');
+        li.textContent = 'No records yet.';
+        el.appendChild(li);
+        return;
+      }
+      snap.forEach(s => {
+        const d = s.data(),
+          when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'just now',
+          li = document.createElement('li');
+        li.textContent = `${fmt(d)}  •  ${when}`;
+        el.appendChild(li);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadHistory() {
+    const user = auth.currentUser;
+    if (!user) return;
+    await Promise.all([
+      renderHistory(user.uid, 'stressResults', 'stressHistory', d => `Score ${d.score}/40 (${d.level})`),
+      renderHistory(user.uid, 'moodLogs', 'moodHistory', d => d.label)
+    ]);
+  }
+
+  /* ============================================================
+     MOOD TRACKER
+     ============================================================ */
+  const moodData = {
+    'very-happy': {
+      title: "Very Happy 😁",
+      desc: "You are experiencing high positive affect and high energy! This state enhances creativity, problem-solving, and social connection. <b>Recommendation:</b> Harness this positive momentum to tackle challenging goals or spread positivity by reaching out to a colleague or friend."
+    },
+    'happy': {
+      title: "Happy 🙂",
+      desc: "A balanced state of contentment and stability. You feel peaceful and comfortably engaged in your routine. <b>Recommendation:</b> Practice a quick moment of gratitude to sustain this balanced state throughout the rest of your day."
+    },
+    'neutral': {
+      title: "Neutral 😐",
+      desc: "You are feeling balanced without strong positive or negative emotional charge. This is an ideal grounded baseline. <b>Recommendation:</b> Take a short walk or stretch to check in with your physical needs and set an intention for the rest of your day."
+    },
+    'sad': {
+      title: "Sad 😔",
+      desc: "You may feel low energy, introspective, or emotionally drained. It is completely natural to have low-energy periods. <b>Recommendation:</b> Engage in gentle self-compassion. Avoid heavy workloads if possible and listen to soothing audio or talk with someone you trust."
+    },
+    'stressed': {
+      title: "Stressed 😣",
+      desc: "Your nervous system is currently heightened, causing feelings of overwhelm, tension, or mental clutter. <b>Recommendation:</b> Step away from screen work for 5 minutes. Use the Breathing Exercise in Relaxation Tools to trigger your body's relaxation response."
+    }
+  };
+
+  let pendingMood = null;
+
+  function resetMoodView() {
+    pendingMood = null;
+    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected-mood'));
+    $('moodTitle').innerText = 'Select a mood above';
+    $('moodDesc').innerHTML = 'Click any of the emojis to get an in-depth breakdown and actionable self-care recommendations.';
+    $('saveMoodBtn').style.display = 'none';
+    $('moodSaveMsg').innerText = '';
+  }
+
+  // Emoji click = sirf details dikhao; history me tab jaayega jab "Save my mood" dabaoge
+  function selectMood(key, el) {
+    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected-mood'));
+    el.classList.add('selected-mood');
+
+    const data = moodData[key];
+    pendingMood = key;
+    $('moodTitle').innerText = data.title;
+    $('moodDesc').innerHTML = data.desc;
+    $('saveMoodBtn').style.display = 'inline-block';
+    $('saveMoodBtn').disabled = false;
+    $('moodSaveMsg').innerText = '';
+  }
+
+  async function saveMood() {
+    if (!pendingMood || !auth.currentUser) return;
+    const data = moodData[pendingMood];
+    $('saveMoodBtn').disabled = true;
+    try {
+      const uid = auth.currentUser.uid;
+      await addDoc(collection(db, 'users', uid, 'moodLogs'), { mood: pendingMood, label: data.title, createdAt: serverTimestamp() });
+      await updateDoc(doc(db, 'users', uid), { lastMood: pendingMood, lastMoodAt: serverTimestamp() });
+      $('moodSaveMsg').style.color = '#6A9157';
+      $('moodSaveMsg').innerText = 'Mood saved ✓';
+      renderHistory(uid, 'moodLogs', 'moodHistory', d => d.label);
+    } catch (e) {
+      console.error(e);
+      $('saveMoodBtn').disabled = false;
+      $('moodSaveMsg').style.color = '#E53935';
+      $('moodSaveMsg').innerText = 'Could not save. Please try again.';
+    }
+  }
+
+  /* ============================================================
+     RELAXATION TOOLS
+     ============================================================ */
+  // 1. Breathing (4-7-8)
+  let breathActive = false, breathTimer;
+  const phases = [
+    { text: "Inhale (4s)", ms: 4000, expand: true },
+    { text: "Hold (7s)", ms: 7000, expand: true },
+    { text: "Exhale (8s)", ms: 8000, expand: false }
+  ];
+
+  function runBreath(i = 0) {
+    if (!breathActive) return;
+    const p = phases[i % 3], c = $('breathCircle');
+    c.innerText = p.text;
+    c.style.transitionDuration = (i % 3 === 1 ? 0 : p.ms / 1000) + 's';
+    c.classList.toggle('circle-expand', p.expand);
+    breathTimer = setTimeout(() => runBreath(i + 1), p.ms);
+  }
+
+  function stopBreathing() {
+    breathActive = false;
+    clearTimeout(breathTimer);
+    const c = $('breathCircle');
+    $('breathBtn').innerText = "Start Breathing";
+    c.innerText = "Ready";
+    c.style.transitionDuration = '1s';
+    c.classList.remove('circle-expand');
+  }
+
+  function toggleBreathing() {
+    if (breathActive) return stopBreathing();
+    breathActive = true;
+    $('breathBtn').innerText = "Stop Breathing";
+    runBreath(0);
+  }
+
+  // 2. Meditation Timer
+  let medTimer, medSeconds = 300;
+
+  function drawMed() {
+    const m = Math.floor(medSeconds / 60), s = medSeconds % 60;
+    $('medTimerDisplay').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  function startMeditation() {
+    clearInterval(medTimer);
+    if (medSeconds === 0) { medSeconds = 300; drawMed(); }   // complete hone ke baad dobara start kar sako
+    $('medStatus').innerText = 'Meditation in progress...';
+    medTimer = setInterval(async () => {
+      if (medSeconds > 0) {
+        medSeconds--;
+        drawMed();
+      }
+      if (medSeconds === 0) {
+        clearInterval(medTimer);
+        $('medStatus').innerText = 'Session complete! 🌿';
+        try {
+          if (auth.currentUser) await updateDoc(doc(db, 'users', auth.currentUser.uid), { meditationSessions: increment(1), lastMeditationAt: serverTimestamp() });
+        } catch (e) { console.error(e); }
+      }
+    }, 1000);
+  }
+
+  function resetMeditation() {
+    clearInterval(medTimer);
+    medSeconds = 300;
+    drawMed();
+    $('medStatus').innerText = '';
+  }
+
+  // 4. Positive Affirmations
+  let affirmations = [
+    "I am capable of overcoming any obstacle in my daily routine.",
+    "My stress does not define who I am.",
+    "Every breath I take grounds and relaxes me.",
+    "I give myself permission to rest and recharge.",
+    "I focus on what I can control and let go of what I cannot.",
+    "Small steps every day lead to big mental transformations.",
+    "I am resilient, strong, and prepared for challenges.",
+    "Peace and clarity start from within my mind.",
+    "My daily efforts are sufficient and worthy.",
+    "I prioritize my mental well-being without guilt."
+  ];
+
+  let lastAff = -1;
+  function nextAffirmation() {
+    let i;
+    do { i = Math.floor(Math.random() * affirmations.length); } while (i === lastAff);
+    lastAff = i;
+    $('affirmationText').innerText = `"${affirmations[i]}"`;
+  }
+
+  /* Module scope se inline onclick ke liye functions ko window pe expose karna zaroori hai */
+  Object.assign(window, {
+    goToSlide, changeSlide, showAuthTab, registerUser, loginUser, logoutUser,
+    selectAnswer, nextQuestion, prevQuestion, calculateAndShowResult, selectMood, saveMood, toggleBreathing, startMeditation, resetMeditation, nextAffirmation
+  });
+
+  // Admin settings (config/app): announcement, maintenance, helpline, affirmations
+  (async function loadConfig() {
+    try {
+      const c = await getDoc(doc(db, 'config', 'app'));
+      if (!c.exists()) return;
+      const cfg = c.data(), bar = $('announceBar');
+      if (cfg.helpline) helpline = cfg.helpline;
+      if (cfg.affirmations && cfg.affirmations.length) affirmations = cfg.affirmations;
+      document.body.classList.toggle('maint', !!cfg.maintenance);
+      if (cfg.announcement || cfg.maintenance) {
+        bar.textContent = (cfg.maintenance ? '🛠 ' : '📢 ') + (cfg.announcement || 'App maintenance chal raha hai. Thodi der baad aaiye.');
+        bar.style.display = 'block';
+      }
+    } catch (e) { console.error(e); }
+  })();
+
+  // Initialize View
+  updateSlideView();
+</script>
+</body>
+</html>
