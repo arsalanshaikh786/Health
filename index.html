@@ -867,6 +867,7 @@ footer {
     auth = getAuth(app),
     db = getFirestore(app),
     EMAIL_DOMAIN = "@mindcare.app",   // username/mobile ko Firebase email-format me map karne ke liye (fake email, mail nahi jaata)
+    APP_TAG = "mindcare",             // is app ke users ko doosre platforms se alag rakhne ke liye
     $ = id => document.getElementById(id);
 
   /* ============================================================
@@ -968,7 +969,8 @@ footer {
         uid = cred.user.uid,
         batch = writeBatch(db);
 
-      batch.set(doc(db, 'users', uid), { name, username, mobile, testsTaken: 0, meditationSessions: 0, createdAt: serverTimestamp() });
+      // app tag zaroori hai — admin panel isi se sirf mindcare users filter karta hai
+      batch.set(doc(db, 'users', uid), { name, username, mobile, app: APP_TAG, testsTaken: 0, meditationSessions: 0, createdAt: serverTimestamp() });
       batch.set(doc(db, 'usernames', username), { uid });
       batch.set(doc(db, 'mobiles', mobile), { username, uid });
       await batch.commit();
@@ -1010,14 +1012,32 @@ footer {
     try { await signOut(auth); } catch (e) { console.error(e); }
   }
 
-  async function enterApp(user) {
+  // purane users jinke doc me app field nahi hai, unhe ek baar auto-tag kar do
+  async function ensureAppTag(user) {
     try {
-      const snap = await getDoc(doc(db, 'users', user.uid));
-      profile = snap.exists() ? snap.data() : { name: user.email.split('@')[0] };
-    } catch (e) {
-      console.error(e);
-      profile = { name: user.email.split('@')[0] };
+      const ref = doc(db, 'users', user.uid),
+        snap = await getDoc(ref);
+      if (snap.exists() && !snap.data().app) {
+        await updateDoc(ref, { app: APP_TAG });
+        return snap.data();
+      }
+      return snap.exists() ? snap.data() : null;
+    } catch (e) { console.error(e); return null; }
+  }
+
+  async function enterApp(user) {
+    let data = await ensureAppTag(user);
+    if (!data) {
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        data = snap.exists() ? snap.data() : { name: user.email.split('@')[0] };
+      } catch (e) {
+        console.error(e);
+        data = { name: user.email.split('@')[0] };
+      }
     }
+    profile = data;
+
     if (profile.blocked) {                             // admin ne block kiya hai
       await signOut(auth);
       return authMsg('Your account has been blocked by admin.');
